@@ -29,6 +29,23 @@ header h1 {
     font-weight: 400;
 }
 
+.level-selector {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.level-selector select {
+    padding: 5px 10px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    background: white;
+    color: #3c4043;
+    font-size: 14px;
+}
+
 .card-container {
     background: white;
     border-radius: 12px;
@@ -72,6 +89,11 @@ header h1 {
 .card-back {
     background: linear-gradient(135deg, #e3f2fd, #bbdefb);
     transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
 }
 
 .card.flipped .card-front {
@@ -91,6 +113,40 @@ header h1 {
 
 #translationDisplay {
     color: #1a73e8;
+    font-size: 1.5em;
+    line-height: 1.6;
+}
+
+.translation-details {
+    text-align: left;
+    width: 100%;
+    max-width: 350px;
+}
+
+.phonetic {
+    font-size: 1.2em;
+    color: #1a73e8;
+    margin: 10px 0;
+    font-style: italic;
+}
+
+.explanation {
+    font-size: 1em;
+    color: #5f6368;
+    margin: 10px 0;
+}
+
+.example {
+    font-size: 0.9em;
+    color: #3c4043;
+    margin: 8px 0;
+    font-style: italic;
+}
+
+.example-chinese {
+    font-size: 0.9em;
+    color: #185abc;
+    margin: 5px 0 0 0;
 }
 
 .controls {

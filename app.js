@@ -1,31 +1,7 @@
-// 单词数据库
-let wordDatabase = [
-    { chinese: "你好", english: "hello" },
-    { chinese: "谢谢", english: "thank you" },
-    { chinese: "是", english: "yes" },
-    { chinese: "否", english: "no" },
-    { chinese: "水", english: "water" },
-    { chinese: "食物", english: "food" },
-    { chinese: "猫", english: "cat" },
-    { chinese: "狗", english: "dog" },
-    { chinese: "书", english: "book" },
-    { chinese: "学校", english: "school" },
-    { chinese: "老师", english: "teacher" },
-    { chinese: "学生", english: "student" },
-    { chinese: "朋友", english: "friend" },
-    { chinese: "家庭", english: "family" },
-    { chinese: "爱", english: "love" },
-    { chinese: "时间", english: "time" },
-    { chinese: "房子", english: "house" },
-    { chinese: "汽车", english: "car" },
-    { chinese: "电话", english: "phone" },
-    { chinese: "电脑", english: "computer" },
-    { chinese: "互联网", english: "internet" },
-    { chinese: "学习", english: "study" },
-    { chinese: "工作", english: "work" },
-    { chinese: "快乐", english: "happy" },
-    { chinese: "悲伤", english: "sad" }
-];
+// 当前单词索引和级别
+let currentIndex = 0;
+let currentLevel = 'cet4'; // 默认为四级词汇
+let currentWords = [];
 
 // DOM元素
 const flashcard = document.getElementById('flashcard');
@@ -45,25 +21,50 @@ const closeBtn = document.querySelector('.close');
 const chineseInput = document.getElementById('chineseInput');
 const englishInput = document.getElementById('englishInput');
 const saveWordBtn = document.getElementById('saveWordBtn');
+const levelSelector = document.getElementById('levelSelector');
 
-// 当前单词索引
-let currentIndex = 0;
+// 根据当前级别获取单词
+function loadWordsForLevel(level) {
+    currentWords = getWordsByLevel(level) || [];
+    if (currentWords.length > 0) {
+        currentIndex = 0;
+        showCurrentWord();
+    } else {
+        wordDisplay.textContent = "该级别暂无单词";
+        translationDisplay.textContent = "请选择其他级别";
+    }
+}
 
-// 显示当前单词
+// 显示当前单词（带详细信息）
 function showCurrentWord() {
-    if (wordDatabase.length === 0) {
-        wordDisplay.textContent = "还没有单词，请添加一些";
-        translationDisplay.textContent = "";
+    if (currentWords.length === 0) {
+        wordDisplay.textContent = "该级别暂无单词";
+        translationDisplay.textContent = "请选择其他级别";
         cardBack.style.display = 'none';
         flashcard.classList.remove('flipped');
         return;
     }
     
-    const currentWord = wordDatabase[currentIndex];
+    const currentWord = currentWords[currentIndex];
+    
+    // 显示英文单词
     wordDisplay.textContent = currentWord.english;
-    translationDisplay.textContent = currentWord.chinese;
+    
+    // 构建详细翻译信息
+    const detailedInfo = `
+        <div class="translation-details">
+            <div class="phonetic">${currentWord.phonetic}</div>
+            <div class="chinese">${currentWord.chinese}</div>
+            <div class="explanation"><strong>释义:</strong> ${currentWord.explanation}</div>
+            <div class="example"><strong>例句:</strong> ${currentWord.example}</div>
+            <div class="example-chinese">${currentWord.exampleChinese}</div>
+        </div>
+    `;
+    
+    translationDisplay.innerHTML = detailedInfo;
     cardBack.style.display = 'none';
     flashcard.classList.remove('flipped');
+    flipBtn.textContent = '显示翻译';
 }
 
 // 翻转卡片
@@ -73,45 +74,61 @@ function flipCard() {
         cardBack.style.display = 'flex';
         flipBtn.textContent = '隐藏翻译';
     } else {
+        cardBack.style.display = 'none';
         flipBtn.textContent = '显示翻译';
     }
 }
 
 // 下一个单词
 function nextWord() {
-    if (wordDatabase.length === 0) return;
+    if (currentWords.length === 0) return;
     
-    currentIndex = (currentIndex + 1) % wordDatabase.length;
+    currentIndex = (currentIndex + 1) % currentWords.length;
     showCurrentWord();
+    flashcard.classList.remove('flipped');
+    cardBack.style.display = 'none';
+    flipBtn.textContent = '显示翻译';
 }
 
-// 简单翻译函数（基于数据库和一些规则）
+// 翻译函数
 function translateText(text) {
-    // 首先检查是否在数据库中有对应翻译
-    const foundWord = wordDatabase.find(item => 
-        item.english.toLowerCase().includes(text.trim().toLowerCase()) || 
-        item.chinese.includes(text.trim())
-    );
-    
-    if (foundWord) {
-        if (text.trim().match(/[\u4e00-\u9fa5]/)) {
-            // 输入的是中文，返回英文
-            return foundWord.english;
-        } else {
-            // 输入的是英文，返回中文
-            return foundWord.chinese;
-        }
+    // 尝试查找词汇库中的单词
+    const englishWord = lookupEnglishWord(text.trim());
+    if (englishWord) {
+        return `
+            <div class="translation-details">
+                <div class="word-header">
+                    <span class="word">${englishWord.english}</span>
+                    <span class="phonetic">${englishWord.phonetic}</span>
+                </div>
+                <div class="chinese">${englishWord.chinese}</div>
+                <div class="explanation"><strong>释义:</strong> ${englishWord.explanation}</div>
+                <div class="example"><strong>例句:</strong> ${englishWord.example}</div>
+                <div class="example-chinese">${englishWord.exampleChinese}</div>
+                <div class="level">词汇级别: ${getLevelName(englishWord.level)}</div>
+            </div>
+        `;
     }
     
-    // 如果数据库中没有，则提供一些基本翻译规则
-    // 这里只是一个模拟，实际应用中可以集成API
-    if (text.trim().match(/[\u4e00-\u9fa5]/)) {
-        // 中文输入，返回英文翻译提示
-        return `[暂无翻译] "${text}" 的英文可能是... (这是一个示例应用，实际翻译需集成API)`;
-    } else {
-        // 英文输入，返回中文翻译提示
-        return `[暂无翻译] "${text}" 的中文意思是... (这是一个示例应用，实际翻译需集成API)`;
+    const chineseWord = lookupChineseWord(text.trim());
+    if (chineseWord) {
+        return `
+            <div class="translation-details">
+                <div class="word-header">
+                    <span class="word">${chineseWord.english}</span>
+                    <span class="phonetic">${chineseWord.phonetic}</span>
+                </div>
+                <div class="chinese">${chineseWord.chinese}</div>
+                <div class="explanation"><strong>释义:</strong> ${chineseWord.explanation}</div>
+                <div class="example"><strong>例句:</strong> ${chineseWord.example}</div>
+                <div class="example-chinese">${chineseWord.exampleChinese}</div>
+                <div class="level">词汇级别: ${getLevelName(chineseWord.level)}</div>
+            </div>
+        `;
     }
+    
+    // 如果没找到，返回提示信息
+    return `未能找到"${text}"的相关信息。请尝试其他词汇。`;
 }
 
 // 翻译功能
@@ -123,23 +140,30 @@ function performTranslation() {
     }
     
     const translation = translateText(text);
-    translationResult.innerHTML = `<strong>原文:</strong> ${text}<br><strong>翻译:</strong> ${translation}`;
+    translationResult.innerHTML = `<strong>查询:</strong> ${text}<hr>${translation>`;
 }
 
-// 交换输入框内容（模拟功能）
+// 交换输入框内容
 function swapLanguages() {
     const currentInput = inputText.value;
-    // 这里只是一个模拟，实际应用中可以根据上下文智能切换
     if (currentInput) {
-        // 简单的模拟：如果输入包含中文字符，则假设是中译英；否则是英译中
+        // 简单判断语言并尝试转换
         if (currentInput.match(/[\u4e00-\u9fa5]/)) {
-            // 如果输入是中文，尝试查找对应的英文
-            const translated = translateText(currentInput);
-            inputText.value = translated.replace(/\[.+\]/g, '').trim();
+            // 如果输入是中文，尝试查找英文
+            const wordInfo = lookupChineseWord(currentInput);
+            if (wordInfo) {
+                inputText.value = wordInfo.english;
+            } else {
+                inputText.value = `未找到"${currentInput}"的英文对应词`;
+            }
         } else {
-            // 如果输入是英文，尝试查找对应的中文
-            const translated = translateText(currentInput);
-            inputText.value = translated.replace(/\[.+\]/g, '').trim();
+            // 如果输入是英文，尝试查找中文
+            const wordInfo = lookupEnglishWord(currentInput);
+            if (wordInfo) {
+                inputText.value = wordInfo.chinese;
+            } else {
+                inputText.value = `未找到"${currentInput}"的中文翻译`;
+            }
         }
     }
 }
@@ -166,23 +190,26 @@ function saveNewWord() {
         return;
     }
     
-    // 检查是否已存在
-    const exists = wordDatabase.some(word => 
-        word.chinese === chinese || word.english.toLowerCase() === english.toLowerCase()
-    );
-    
-    if (exists) {
-        alert('单词已存在！');
-        return;
-    }
-    
-    wordDatabase.push({ chinese, english });
-    alert('单词添加成功！');
+    // 在实际应用中，这里会将单词添加到当前级别
+    // 为简化，暂时只显示提示
+    alert(`新单词已添加:\n英文: ${english}\n中文: ${chinese}\n\n(实际应用中会保存到${getLevelName(currentLevel)}词汇库)`);
     closeModal();
-    
-    // 更新显示
-    currentIndex = wordDatabase.length - 1;
-    showCurrentWord();
+}
+
+// 切换词汇级别
+function changeLevel(newLevel) {
+    currentLevel = newLevel;
+    loadWordsForLevel(newLevel);
+}
+
+// 获取级别名称
+function getLevelName(level) {
+    switch(level) {
+        case 'cet4': return '四级';
+        case 'cet6': return '六级';
+        case 'ielts': return '雅思';
+        default: return '未知';
+    }
 }
 
 // 事件监听器
@@ -194,6 +221,11 @@ saveWordBtn.addEventListener('click', saveNewWord);
 translateBtn.addEventListener('click', performTranslation);
 swapBtn.addEventListener('click', swapLanguages);
 
+// 级别选择器事件
+levelSelector.addEventListener('change', (e) => {
+    changeLevel(e.target.value);
+});
+
 // 点击模态框外部关闭
 window.addEventListener('click', (event) => {
     if (event.target === modal) {
@@ -203,5 +235,6 @@ window.addEventListener('click', (event) => {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
-    showCurrentWord();
+    // 初始化默认级别词汇
+    loadWordsForLevel('cet4');
 });

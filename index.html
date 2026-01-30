@@ -10,16 +10,24 @@
     <div class="container">
         <header>
             <h1>单词记忆卡片</h1>
+            <div class="level-selector">
+                <label for="levelSelector">选择词汇级别：</label>
+                <select id="levelSelector">
+                    <option value="cet4">四级词汇</option>
+                    <option value="cet6">六级词汇</option>
+                    <option value="ielts">雅思词汇</option>
+                </select>
+            </div>
         </header>
         
         <main>
             <div class="card-container">
                 <div class="card" id="flashcard">
                     <div class="card-front" id="cardFront">
-                        <p id="wordDisplay">点击“下一个单词”开始</p>
+                        <p id="wordDisplay">点击"下一个单词"开始</p>
                     </div>
                     <div class="card-back" id="cardBack" style="display: none;">
-                        <p id="translationDisplay"></p>
+                        <div id="translationDisplay"></div>
                     </div>
                 </div>
                 
@@ -52,6 +60,7 @@
         </div>
     </div>
     
+    <script src="data/words.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
