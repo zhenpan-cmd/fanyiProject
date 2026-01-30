@@ -29,6 +29,12 @@ header h1 {
     font-weight: 400;
 }
 
+.version-info {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
 .level-selector {
     margin-top: 10px;
     display: flex;
