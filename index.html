@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单词记忆卡片</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>单词记忆卡片</h1>
+        </header>
+        
+        <main>
+            <div class="card-container">
+                <div class="card" id="flashcard">
+                    <div class="card-front" id="cardFront">
+                        <p id="wordDisplay">点击“下一个单词”开始</p>
+                    </div>
+                    <div class="card-back" id="cardBack" style="display: none;">
+                        <p id="translationDisplay"></p>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="flipBtn" class="btn">显示翻译</button>
+                    <button id="nextBtn" class="btn btn-primary">下一个单词</button>
+                    <button id="addBtn" class="btn">添加新词</button>
+                </div>
+            </div>
+            
+            <div class="translator-section">
+                <h2>即时翻译</h2>
+                <textarea id="inputText" placeholder="输入中文或英文..."></textarea>
+                <div class="translate-controls">
+                    <button id="translateBtn" class="btn btn-primary">翻译</button>
+                    <button id="swapBtn" class="btn">交换</button>
+                </div>
+                <div id="translationResult" class="result-box"></div>
+            </div>
+        </main>
+        
+        <div id="addWordModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>添加新单词</h2>
+                <input type="text" id="chineseInput" placeholder="中文意思">
+                <input type="text" id="englishInput" placeholder="英文单词">
+                <button id="saveWordBtn" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
