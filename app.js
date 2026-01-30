@@ -140,7 +140,7 @@ function performTranslation() {
     }
     
     const translation = translateText(text);
-    translationResult.innerHTML = `<strong>查询:</strong> ${text}<hr>${translation>`;
+    translationResult.innerHTML = `<strong>查询:</strong> ${text}<hr>${translation}`;
 }
 
 // 交换输入框内容
