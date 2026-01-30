@@ -140,7 +140,8 @@ function performTranslation() {
     }
     
     const translation = translateText(text);
-    translationResult.innerHTML = `<strong>查询:</strong> ${text}<hr>${translation}`;
+    // 修复编码问题，使用标准ASCII字符
+    translationResult.innerHTML = '<strong>查询:</strong> ' + text + '<hr>' + translation;
 }
 
 // 交换输入框内容
@@ -256,4 +257,4 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 添加初始主题类
     document.body.classList.add('cet4-theme');
-});// Fixed syntax error - Fri Jan 30 04:25:50 PM CST 2026
+});
