@@ -198,8 +198,24 @@ function saveNewWord() {
 
 // 切换词汇级别
 function changeLevel(newLevel) {
+    // 移除旧的主题类
+    document.body.classList.remove('cet4-theme', 'cet6-theme', 'ielts-theme');
+    
+    // 根据新级别添加对应的主题类
+    document.body.classList.add(newLevel + '-theme');
+    
+    // 更新当前级别
     currentLevel = newLevel;
     loadWordsForLevel(newLevel);
+    
+    // 添加视觉反馈效果
+    const container = document.querySelector('.container');
+    container.style.transition = 'transform 0.3s ease';
+    container.style.transform = 'scale(1.02)';
+    
+    setTimeout(() => {
+        container.style.transform = 'scale(1)';
+    }, 300);
 }
 
 // 获取级别名称
@@ -237,4 +253,7 @@ window.addEventListener('click', (event) => {
 document.addEventListener('DOMContentLoaded', () => {
     // 初始化默认级别词汇
     loadWordsForLevel('cet4');
+    
+    // 添加初始主题类
+    document.body.classList.add('cet4-theme');
 });

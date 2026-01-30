@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>功能测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>单词记忆卡片应用 - 功能测试</h1>
+    <div id="results"></div>
+    <button id="runTests">运行功能测试</button>
+    <button id="testFlip">测试翻转功能</button>
+    <button id="testNext">测试下一个单词</button>
+    <button id="testLevelChange">测试级别切换</button>
+    <button id="testTranslate">测试翻译功能</button>
+    
+    <h2>测试元素状态</h2>
+    <div>单词显示: <span id="wordDisplayStatus">-</span></div>
+    <div>翻译显示: <span id="translationDisplayStatus">-</span></div>
+    <div>卡片翻转状态: <span id="flipStatus">-</span></div>
+    
+    <script>
+        // 这里将动态加载应用的脚本进行测试
+        let testResults = [];
+        
+        function addResult(message, isSuccess) {
+            testResults.push({message, isSuccess});
+            const div = document.createElement('div');
+            div.className = `test-result ${isSuccess ? 'success' : 'error'}`;
+            div.textContent = `${isSuccess ? '✓' : '✗'} ${message}`;
+            document.getElementById('results').appendChild(div);
+        }
+        
+        async function runAllTests() {
+            document.getElementById('results').innerHTML = '';
+            testResults = [];
+            
+            // 测试词汇数据加载
+            try {
+                if (typeof getWordsByLevel !== 'undefined') {
+                    addResult('词汇数据加载成功', true);
+                    
+                    const cet4Words = getWordsByLevel('cet4');
+                    if (cet4Words && cet4Words.length > 0) {
+                        addResult(`CET4词汇数量: ${cet4Words.length}`, true);
+                    } else {
+                        addResult('CET4词汇数据异常', false);
+                    }
+                    
+                    const cet6Words = getWordsByLevel('cet6');
+                    if (cet6Words && cet6Words.length > 0) {
+                        addResult(`CET6词汇数量: ${cet6Words.length}`, true);
+                    } else {
+                        addResult('CET6词汇数据异常', false);
+                    }
+                    
+                    const ieltsWords = getWordsByLevel('ielts');
+                    if (ieltsWords && ieltsWords.length > 0) {
+                        addResult(`IELTS词汇数量: ${ieltsWords.length}`, true);
+                    } else {
+                        addResult('IELTS词汇数据异常', false);
+                    }
+                } else {
+                    addResult('词汇数据未加载', false);
+                }
+            } catch (e) {
+                addResult(`词汇数据测试错误: ${e.message}`, false);
+            }
+            
+            // 测试查找功能
+            try {
+                if (typeof lookupEnglishWord !== 'undefined') {
+                    const helloWord = lookupEnglishWord('hello');
+                    if (helloWord && helloWord.english === 'hello') {
+                        addResult('英语单词查找功能正常', true);
+                    } else {
+                        addResult('英语单词查找功能异常', false);
+                    }
+                } else {
+                    addResult('lookupEnglishWord函数未定义', false);
+                }
+                
+                if (typeof lookupChineseWord !== 'undefined') {
+                    const niHaoWord = lookupChineseWord('你好');
+                    if (niHaoWord && niHaoWord.chinese.includes('你好')) {
+                        addResult('中文单词查找功能正常', true);
+                    } else {
+                        addResult('中文单词查找功能异常', false);
+                    }
+                } else {
+                    addResult('lookupChineseWord函数未定义', false);
+                }
+            } catch (e) {
+                addResult(`查找功能测试错误: ${e.message}`, false);
+            }
+            
+            // 测试应用逻辑函数
+            try {
+                if (typeof loadWordsForLevel !== 'undefined') {
+                    addResult('loadWordsForLevel函数存在', true);
+                } else {
+                    addResult('loadWordsForLevel函数不存在', false);
+                }
+                
+                if (typeof showCurrentWord !== 'undefined') {
+                    addResult('showCurrentWord函数存在', true);
+                } else {
+                    addResult('showCurrentWord函数不存在', false);
+                }
+                
+                if (typeof flipCard !== 'undefined') {
+                    addResult('flipCard函数存在', true);
+                } else {
+                    addResult('flipCard函数不存在', false);
+                }
+                
+                if (typeof nextWord !== 'undefined') {
+                    addResult('nextWord函数存在', true);
+                } else {
+                    addResult('nextWord函数不存在', false);
+                }
+            } catch (e) {
+                addResult(`应用逻辑函数测试错误: ${e.message}`, false);
+            }
+            
+            updateElementStatus();
+        }
+        
+        function updateElementStatus() {
+            if (typeof wordDisplay !== 'undefined') {
+                document.getElementById('wordDisplayStatus').textContent = wordDisplay.textContent || 'N/A';
+            }
+            if (typeof translationDisplay !== 'undefined') {
+                document.getElementById('translationDisplayStatus').textContent = translationDisplay.textContent || 'N/A';
+            }
+            if (typeof flashcard !== 'undefined') {
+                document.getElementById('flipStatus').textContent = flashcard.classList.contains('flipped') ? '已翻转' : '未翻转';
+            }
+        }
+        
+        function testFlipFunction() {
+            if (typeof flipCard !== 'undefined') {
+                try {
+                    flipCard();
+                    updateElementStatus();
+                    addResult('翻转功能测试成功', true);
+                } catch (e) {
+                    addResult(`翻转功能测试失败: ${e.message}`, false);
+                }
+            } else {
+                addResult('flipCard函数不可用', false);
+            }
+        }
+        
+        function testNextWordFunction() {
+            if (typeof nextWord !== 'undefined') {
+                try {
+                    nextWord();
+                    updateElementStatus();
+                    addResult('下一个单词功能测试成功', true);
+                } catch (e) {
+                    addResult(`下一个单词功能测试失败: ${e.message}`, false);
+                }
+            } else {
+                addResult('nextWord函数不可用', false);
+            }
+        }
+        
+        function testLevelChangeFunction() {
+            if (typeof changeLevel !== 'undefined') {
+                try {
+                    changeLevel('cet6');
+                    updateElementStatus();
+                    addResult('级别切换功能测试成功', true);
+                } catch (e) {
+                    addResult(`级别切换功能测试失败: ${e.message}`, false);
+                }
+            } else {
+                addResult('changeLevel函数不可用', false);
+            }
+        }
+        
+        function testTranslateFunction() {
+            if (typeof performTranslation !== 'undefined') {
+                try {
+                    // 设置测试文本
+                    if (typeof inputText !== 'undefined') {
+                        inputText.value = 'hello';
+                    }
+                    performTranslation();
+                    addResult('翻译功能测试成功', true);
+                } catch (e) {
+                    addResult(`翻译功能测试失败: ${e.message}`, false);
+                }
+            } else {
+                addResult('performTranslation函数不可用', false);
+            }
+        }
+        
+        document.getElementById('runTests').addEventListener('click', runAllTests);
+        document.getElementById('testFlip').addEventListener('click', testFlipFunction);
+        document.getElementById('testNext').addEventListener('click', testNextWordFunction);
+        document.getElementById('testLevelChange').addEventListener('click', testLevelChangeFunction);
+        document.getElementById('testTranslate').addEventListener('click', testTranslateFunction);
+        
+        // 加载应用脚本并运行测试
+        window.onload = async function() {
+            try {
+                // 首先加载词汇数据
+                const wordsScript = document.createElement('script');
+                wordsScript.src = 'http://127.0.0.1:8082/data/words.js';
+                document.head.appendChild(wordsScript);
+                
+                wordsScript.onload = function() {
+                    console.log('词汇数据脚本加载完成');
+                    
+                    // 然后加载应用逻辑
+                    const appScript = document.createElement('script');
+                    appScript.src = 'http://127.0.0.1:8082/app.js';
+                    document.head.appendChild(appScript);
+                    
+                    appScript.onload = function() {
+                        console.log('应用脚本加载完成');
+                        
+                        // 稍等一下确保所有初始化完成
+                        setTimeout(() => {
+                            console.log('开始运行功能测试...');
+                            runAllTests();
+                        }, 1000);
+                    };
+                    
+                    appScript.onerror = function() {
+                        addResult('应用脚本加载失败', false);
+                    };
+                };
+                
+                wordsScript.onerror = function() {
+                    addResult('词汇数据脚本加载失败', false);
+                };
+            } catch (e) {
+                addResult(`脚本加载过程出错: ${e.message}`, false);
+            }
+        };
+    </script>
+</body>
+</html>

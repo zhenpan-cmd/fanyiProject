@@ -17,6 +17,59 @@ body {
     padding: 20px;
 }
 
+/* 不同词汇级别的主题色 */
+.cet4-theme {
+    --theme-color: #2196F3;
+    --theme-light: #bbdefb;
+    --theme-dark: #1976D2;
+}
+
+.cet6-theme {
+    --theme-color: #4CAF50;
+    --theme-light: #c8e6c9;
+    --theme-dark: #388E3C;
+}
+
+.ielts-theme {
+    --theme-color: #FF9800;
+    --theme-light: #ffe0b2;
+    --theme-dark: #F57C00;
+}
+
+/* 应用主题色到相关元素 */
+.cet4-theme header h1,
+.cet4-theme .btn-primary {
+    color: var(--theme-dark);
+}
+
+.cet4-theme .card-container,
+.cet4-theme .translator-section {
+    box-shadow: 0 2px 10px rgba(33, 150, 243, 0.2);
+    border: 1px solid var(--theme-light);
+}
+
+.cet6-theme header h1,
+.cet6-theme .btn-primary {
+    color: var(--theme-dark);
+}
+
+.cet6-theme .card-container,
+.cet6-theme .translator-section {
+    box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2);
+    border: 1px solid var(--theme-light);
+}
+
+.ielts-theme header h1,
+.ielts-theme .btn-primary {
+    color: var(--theme-dark);
+}
+
+.ielts-theme .card-container,
+.ielts-theme .translator-section {
+    box-shadow: 0 2px 10px rgba(255, 152, 0, 0.2);
+    border: 1px solid var(--theme-light);
+}
+
 header {
     text-align: center;
     margin-bottom: 30px;
