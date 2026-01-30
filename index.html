@@ -60,7 +60,38 @@
         </div>
     </div>
     
+    <script>
+        // 添加错误处理和调试信息
+        window.onerror = function(message, source, lineno, colno, error) {
+            console.error('全局错误:', message, source, lineno, colno, error);
+        };
+        
+        console.log("页面开始加载...");
+    </script>
+    
     <script src="data/words.js"></script>
+    <script>
+        console.log("词汇数据已加载，可用函数:", typeof getWordsByLevel, typeof lookupEnglishWord);
+    </script>
     <script src="app.js"></script>
+    <script>
+        console.log("应用脚本已加载，等待DOM...");
+        
+        // 确保DOM完全加载后再初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM已加载，初始化应用...");
+            
+            // 检查必需的函数是否存在
+            if(typeof loadWordsForLevel === 'function' && typeof getWordsByLevel === 'function') {
+                console.log("所有必需的函数已定义，初始化默认词汇...");
+                loadWordsForLevel('cet4');
+            } else {
+                console.error("必需的函数未定义:", {
+                    loadWordsForLevel: typeof loadWordsForLevel,
+                    getWordsByLevel: typeof getWordsByLevel
+                });
+            }
+        });
+    </script>
 </body>
 </html>
