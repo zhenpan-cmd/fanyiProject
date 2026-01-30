@@ -250,6 +250,41 @@ window.addEventListener('click', (event) => {
     }
 });
 
+// 微信分享功能支持
+function setupWeChatShare() {
+    // 这里可以集成微信JS-SDK进行分享配置
+    // 仅在微信环境中有效
+    if (typeof WeixinJSBridge !== 'undefined') {
+        WeixinJSBridge.on('menu:share:appmessage', function(argv) {
+            // 分享给朋友
+            WeixinJSBridge.invoke('sendAppMessage', {
+                "img_url": "",
+                "img_width": "120",
+                "img_height": "120",
+                "link": window.location.href,
+                "desc": "单词记忆卡片 - 提升你的词汇量",
+                "title": "单词记忆卡片"
+            }, function(res) {
+                // 分享回调
+            });
+        });
+        
+        WeixinJSBridge.on('menu:share:timeline', function(argv) {
+            // 分享到朋友圈
+            WeixinJSBridge.invoke('shareTimeline', {
+                "img_url": "",
+                "img_width": "120",
+                "img_height": "120",
+                "link": window.location.href,
+                "desc": "单词记忆卡片 - 提升你的词汇量",
+                "title": "单词记忆卡片"
+            }, function(res) {
+                // 分享回调
+            });
+        });
+    }
+}
+
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
     // 初始化默认级别词汇
@@ -257,4 +292,35 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 添加初始主题类
     document.body.classList.add('cet4-theme');
+    
+    // 设置微信分享
+    setupWeChatShare();
+    
+    // 添加移动端触摸支持
+    addTouchSupport();
 });
+
+// 添加触摸支持
+function addTouchSupport() {
+    const flipButton = document.getElementById('flipBtn');
+    const nextButton = document.getElementById('nextBtn');
+    
+    // 为移动端添加触摸反馈
+    if ('ontouchstart' in window) {
+        [flipButton, nextButton].forEach(button => {
+            if (button) {
+                button.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.95)';
+                });
+                
+                button.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
+                    // 延迟恢复，提供更好的触感反馈
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            }
+        });
+    }
+}
