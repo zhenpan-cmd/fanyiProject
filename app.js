@@ -256,4 +256,4 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 添加初始主题类
     document.body.classList.add('cet4-theme');
-});
+});// Fixed syntax error - Fri Jan 30 04:25:50 PM CST 2026
