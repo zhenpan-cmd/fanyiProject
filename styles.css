@@ -155,13 +155,58 @@ header h1 {
     gap: 10px;
 }
 
+/* 优化下拉框样式 */
+.styled-select {
+    padding: 12px 15px;
+    font-size: 16px;
+    font-weight: 500;
+    border: 2px solid #dadce0;
+    border-radius: 6px;
+    background-color: white;
+    color: #202124;
+    min-width: 150px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+}
+
+.styled-select:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+}
+
 .level-selector select {
-    padding: 5px 10px;
-    border: 1px solid #dadce0;
-    border-radius: 4px;
-    background: white;
-    color: #3c4043;
+    padding: 12px 15px;
+    font-size: 16px;
+    font-weight: 500;
+    border: 2px solid #dadce0;
+    border-radius: 6px;
+    background-color: white;
+    color: #202124;
+    min-width: 150px;
+    outline: none;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+}
+
+.level-selector select:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+}
+
+/* 返回首页链接样式 */
+.back-link {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.back-link .btn {
+    padding: 8px 16px;
     font-size: 14px;
+    min-width: auto;
+    font-weight: 500;
 }
 
 .card-container {
@@ -277,32 +322,54 @@ header h1 {
 .btn {
     padding: 12px 24px;
     border: 1px solid #dadce0;
-    border-radius: 4px;
+    border-radius: 6px;
     background: white;
     color: #3c4043;
-    font-size: 14px;
+    font-size: 16px; /* 增大字体 */
+    font-weight: 600; /* 使文字更明显 */
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s;
+    min-width: 120px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* 添加阴影 */
 }
 
 .btn:hover {
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     background: #f8f9fa;
 }
 
 .btn:active {
     background: #f1f3f4;
+    transform: scale(0.98);
 }
 
 .btn-primary {
-    background: #1a73e8;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* 新增渐变色 */
     color: white;
     border: 1px solid transparent;
+    font-weight: 600;
 }
 
 .btn-primary:hover {
-    background: #1967d2;
-    box-shadow: 0 1px 2px rgba(26,115,232,0.3);
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #f1f3f4;
+    color: #5f6368;
+    border: 1px solid #dadce0;
+}
+
+.secondary-btn {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.big-btn {
+    padding: 15px 25px;
+    font-size: 18px;
+    min-width: 150px;
 }
 
 .translator-section {

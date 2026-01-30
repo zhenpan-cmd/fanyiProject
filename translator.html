@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="即时翻译">
+    <meta name="format-detection" content="telephone=no">
+    <title>即时翻译</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="cet4-theme">
+    <div class="container">
+        <header>
+            <h1>即时翻译</h1>
+            <div class="version-info">版本: v1.6.0</div>
+            <div class="back-link">
+                <a href="entry.html" class="btn btn-secondary">← 返回首页</a>
+            </div>
+        </header>
+        
+        <main>
+            <div class="translator-section full-width">
+                <textarea id="inputText" placeholder="输入中文或英文..."></textarea>
+                <div class="translate-controls">
+                    <button id="translateBtn" class="btn btn-primary big-btn">🔍 立即翻译</button>
+                    <button id="swapBtn" class="btn secondary-btn big-btn">🔄 交换语言</button>
+                </div>
+                <div id="translationResult" class="result-box"></div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        // 添加错误处理和调试信息
+        window.onerror = function(message, source, lineno, colno, error) {
+            console.error('全局错误:', message, source, lineno, colno, error);
+        };
+    </script>
+    
+    <script src="data/words.js"></script>
+    <script>
+        // DOM元素
+        const inputText = document.getElementById('inputText');
+        const translateBtn = document.getElementById('translateBtn');
+        const swapBtn = document.getElementById('swapBtn');
+        const translationResult = document.getElementById('translationResult');
+
+        // 翻译函数
+        function translateText(text) {
+            // 尝试查找词汇库中的单词
+            const englishWord = lookupEnglishWord(text.trim());
+            if (englishWord) {
+                return `
+                    <div class="translation-details">
+                        <div class="word-header">
+                            <span class="word">${englishWord.english}</span>
+                            <span class="phonetic">/${englishWord.phonetic}/</span>
+                        </div>
+                        <div class="chinese">${englishWord.chinese}</div>
+                        <div class="explanation"><strong>释义:</strong> ${englishWord.explanation}</div>
+                        <div class="examples">
+                            <strong>例句:</strong><br>
+                            ${englishWord.example ? `<div class="example">${englishWord.example}</div><div class="example-chinese">${englishWord.exampleChinese}</div>` : ''}
+                            ${englishWord.example2 ? `<div class="example">${englishWord.example2}</div><div class="example-chinese">${englishWord.exampleChinese2 || ''}</div>` : ''}
+                            ${englishWord.example3 ? `<div class="example">${englishWord.example3}</div><div class="example-chinese">${englishWord.exampleChinese3 || ''}</div>` : ''}
+                        </div>
+                        <div class="level">词汇级别: ${getLevelName(englishWord.level)}</div>
+                    </div>
+                `;
+            }
+            
+            const chineseWord = lookupChineseWord(text.trim());
+            if (chineseWord) {
+                return `
+                    <div class="translation-details">
+                        <div class="word-header">
+                            <span class="word">${chineseWord.english}</span>
+                            <span class="phonetic">/${chineseWord.phonetic}/</span>
+                        </div>
+                        <div class="chinese">${chineseWord.chinese}</div>
+                        <div class="explanation"><strong>释义:</strong> ${chineseWord.explanation}</div>
+                        <div class="examples">
+                            <strong>例句:</strong><br>
+                            ${chineseWord.example ? `<div class="example">${chineseWord.example}</div><div class="example-chinese">${chineseWord.exampleChinese}</div>` : ''}
+                            ${chineseWord.example2 ? `<div class="example">${chineseWord.example2}</div><div class="example-chinese">${chineseWord.exampleChinese2 || ''}</div>` : ''}
+                            ${chineseWord.example3 ? `<div class="example">${chineseWord.example3}</div><div class="example-chinese">${chineseWord.exampleChinese3 || ''}</div>` : ''}
+                        </div>
+                        <div class="level">词汇级别: ${getLevelName(chineseWord.level)}</div>
+                    </div>
+                `;
+            }
+            
+            // 如果没找到，返回提示信息
+            return `未能找到"${text}"的相关信息。请尝试其他词汇。`;
+        }
+
+        // 翻译功能
+        function performTranslation() {
+            const text = inputText.value.trim();
+            if (!text) {
+                translationResult.textContent = "请输入要翻译的文本";
+                return;
+            }
+            
+            const translation = translateText(text);
+            translationResult.innerHTML = `<div class="query-section"><strong>查询:</strong> ${text}</div><hr class="divider">${translation}`;
+        }
+
+        // 交换输入框内容
+        function swapLanguages() {
+            const currentInput = inputText.value;
+            if (currentInput) {
+                // 简单判断语言并尝试转换
+                if (currentInput.match(/[\u4e00-\u9fa5]/)) {
+                    // 如果输入是中文，尝试查找英文
+                    const wordInfo = lookupChineseWord(currentInput);
+                    if (wordInfo) {
+                        inputText.value = wordInfo.english;
+                    } else {
+                        inputText.value = `未找到"${currentInput}"的英文对应词`;
+                    }
+                } else {
+                    // 如果输入是英文，尝试查找中文
+                    const wordInfo = lookupEnglishWord(currentInput);
+                    if (wordInfo) {
+                        inputText.value = wordInfo.chinese;
+                    } else {
+                        inputText.value = `未找到"${currentInput}"的中文翻译`;
+                    }
+                }
+            }
+        }
+
+        // 获取级别名称
+        function getLevelName(level) {
+            switch(level) {
+                case 'cet4': return '四级';
+                case 'cet6': return '六级';
+                case 'ielts': return '雅思';
+                default: return '未知';
+            }
+        }
+
+        // 事件监听器
+        translateBtn.addEventListener('click', performTranslation);
+        swapBtn.addEventListener('click', swapLanguages);
+
+        // 回车键翻译
+        inputText.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                performTranslation();
+            }
+        });
+
+        // 微信分享功能支持
+        function setupWeChatShare() {
+            // 这里可以集成微信JS-SDK进行分享配置
+            // 仅在微信环境中有效
+            if (typeof WeixinJSBridge !== 'undefined') {
+                WeixinJSBridge.on('menu:share:appmessage', function(argv) {
+                    // 分享给朋友
+                    WeixinJSBridge.invoke('sendAppMessage', {
+                        "img_url": "",
+                        "img_width": "120",
+                        "img_height": "120",
+                        "link": window.location.href,
+                        "desc": "即时翻译 - 快速查找单词释义和例句",
+                        "title": "即时翻译"
+                    }, function(res) {
+                        // 分享回调
+                    });
+                });
+                
+                WeixinJSBridge.on('menu:share:timeline', function(argv) {
+                    // 分享到朋友圈
+                    WeixinJSBridge.invoke('shareTimeline', {
+                        "img_url": "",
+                        "img_width": "120",
+                        "img_height": "120",
+                        "link": window.location.href,
+                        "desc": "即时翻译 - 快速查找单词释义和例句",
+                        "title": "即时翻译"
+                    }, function(res) {
+                        // 分享回调
+                    });
+                });
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            setupWeChatShare();
+            
+            // 添加移动端触摸支持
+            [translateBtn, swapBtn].forEach(button => {
+                if (button && 'ontouchstart' in window) {
+                    button.addEventListener('touchstart', function() {
+                        this.style.transform = 'scale(0.95)';
+                    });
+                    
+                    button.addEventListener('touchend', function() {
+                        this.style.transform = 'scale(1)';
+                        // 延迟恢复，提供更好的触感反馈
+                        setTimeout(() => {
+                            this.style.transform = '';
+                        }, 150);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

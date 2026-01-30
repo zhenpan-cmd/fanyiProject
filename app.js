@@ -50,21 +50,45 @@ function showCurrentWord() {
     // 显示英文单词
     wordDisplay.textContent = currentWord.english;
     
-    // 构建详细翻译信息
+    // 构建详细翻译信息，包含音标和多条例句
+    let examplesHtml = '';
+    if (currentWord.example) {
+        examplesHtml += `<div class="example"><strong>例句1:</strong> ${currentWord.example}</div>`;
+        if (currentWord.exampleChinese) {
+            examplesHtml += `<div class="example-chinese">${currentWord.exampleChinese}</div>`;
+        }
+    }
+    if (currentWord.example2) {
+        examplesHtml += `<div class="example"><strong>例句2:</strong> ${currentWord.example2}</div>`;
+        if (currentWord.exampleChinese2) {
+            examplesHtml += `<div class="example-chinese">${currentWord.exampleChinese2}</div>`;
+        }
+    }
+    if (currentWord.example3) {
+        examplesHtml += `<div class="example"><strong>例句3:</strong> ${currentWord.example3}</div>`;
+        if (currentWord.exampleChinese3) {
+            examplesHtml += `<div class="example-chinese">${currentWord.exampleChinese3}</div>`;
+        }
+    }
+    
     const detailedInfo = `
         <div class="translation-details">
-            <div class="phonetic">${currentWord.phonetic}</div>
+            <div class="word-header">
+                <span class="word">${currentWord.english}</span>
+                <span class="phonetic">/${currentWord.phonetic}/</span>
+            </div>
             <div class="chinese">${currentWord.chinese}</div>
             <div class="explanation"><strong>释义:</strong> ${currentWord.explanation}</div>
-            <div class="example"><strong>例句:</strong> ${currentWord.example}</div>
-            <div class="example-chinese">${currentWord.exampleChinese}</div>
+            <div class="examples">
+                ${examplesHtml || '<div class="example">暂无例句</div>'}
+            </div>
         </div>
     `;
     
     translationDisplay.innerHTML = detailedInfo;
     cardBack.style.display = 'none';
     flashcard.classList.remove('flipped');
-    flipBtn.textContent = '显示翻译';
+    flipBtn.textContent = '📖 查看详情';
 }
 
 // 翻转卡片
@@ -72,10 +96,10 @@ function flipCard() {
     flashcard.classList.toggle('flipped');
     if (flashcard.classList.contains('flipped')) {
         cardBack.style.display = 'flex';
-        flipBtn.textContent = '隐藏翻译';
+        flipBtn.textContent = '◀ 返回单词';
     } else {
         cardBack.style.display = 'none';
-        flipBtn.textContent = '显示翻译';
+        flipBtn.textContent = '📖 查看详情';
     }
 }
 
@@ -87,7 +111,7 @@ function nextWord() {
     showCurrentWord();
     flashcard.classList.remove('flipped');
     cardBack.style.display = 'none';
-    flipBtn.textContent = '显示翻译';
+    flipBtn.textContent = '📖 查看详情';
 }
 
 // 翻译函数

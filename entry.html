@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="单词学习">
+    <meta name="format-detection" content="telephone=no">
+    <title>单词学习助手</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .entry-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .entry-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .entry-btn {
+            padding: 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .entry-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+        
+        .entry-btn:active {
+            transform: translateY(0);
+        }
+        
+        .card-option {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .translate-option {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .logo {
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .version-info {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: #999;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body class="cet4-theme">
+    <div class="entry-container">
+        <div class="logo">📚 单词学习助手</div>
+        
+        <div class="entry-options">
+            <button class="entry-btn card-option" onclick="goToFlashcards()">
+                📖 单词卡片
+            </button>
+            
+            <button class="entry-btn translate-option" onclick="goToTranslator()">
+                🔍 即时翻译
+            </button>
+        </div>
+    </div>
+    
+    <div class="version-info">v1.6.0</div>
+    
+    <script>
+        function goToFlashcards() {
+            window.location.href = 'index.html';
+        }
+        
+        function goToTranslator() {
+            window.location.href = 'translator.html';
+        }
+    </script>
+</body>
+</html>
