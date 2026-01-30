@@ -1,0 +1,20 @@
+{
+  "wechatRobot": {
+    "webhookUrl": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=cfe0dbb1-01cb-4c0e-a5e2-1c186982fac3",
+    "enabled": true,
+    "features": {
+      "dailyReport": true,
+      "wordMasteredNotification": true,
+      "learningReminder": true
+    },
+    "schedule": {
+      "dailyReportTime": "18:00",
+      "learningReminderTime": "09:00"
+    },
+    "messageTemplates": {
+      "dailyReport": "# 📚 今日单词学习报告\n## 学习统计\n- **今日目标**: {{dailyGoal}} 个单词\n- **已完成**: {{learnedToday}} 个单词\n- **掌握率**: {{masteryRate}}%\n- **连续学习**: {{streakDays}} 天\n- **累计学习**: {{totalWords}} 个单词",
+      "wordMastered": "🎉 恭喜掌握新单词！\n【{{english}}】 /{{phonetic}}/\n含义：{{chinese}}\n例句：{{example}}",
+      "learningReminder": "⏰ 学习提醒\n该学习今天的单词啦！\n坚持每日学习，积累词汇量，提升英语水平。"
+    }
+  }
+}
